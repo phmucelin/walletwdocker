@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 
 public class Wallet
 {
-    public Guid Id { get; private set; }
+    public Guid Id { get; private set; } = Guid.NewGuid();
     public string Owner { get; set; }
     public decimal Balance { get; private set; }
-    
-    public List<string> History { get; private set; }
 
+    public List<string> History { get; private set; } = new();
+
+    public Wallet() { }
+    
     public Wallet(string owner)
     {
         this.Id = Guid.NewGuid();

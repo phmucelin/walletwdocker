@@ -2,11 +2,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BancoApi;
-// Se o Rider reclamar de "Wallet" ou "WalletEndpoints",
-// clique na lâmpada amarela e dê "Import missing references".
+using BancoApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen();           
@@ -28,6 +32,6 @@ bancoDeDados.Add(c1);
 Console.WriteLine($"PEDRO ID: {c1.Id}"); 
 
 
-app.MapWalletEndpoints(bancoDeDados);
+app.MapWalletEndpoints();
 
 app.Run();
