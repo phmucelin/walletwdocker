@@ -63,7 +63,7 @@ public class WalletServices
         bool sucesso = origem.Transfer(destino, request.Amount);
         if (!sucesso)
         {
-            return new TransferenciaResult(false, "Saldo insuficiente.");
+            return new TransferenciaResult(false, "Error Transfer.");
         }
         await _db.SaveChangesAsync();
         return new TransferenciaResult(true, "Transferencia realizada com sucesso.", origem.Balance, destino.Balance);
