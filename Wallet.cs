@@ -1,0 +1,57 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+public class Wallet
+{
+    public Guid Id { get; private set; }
+    public string Owner { get; set; }
+    public decimal Balance { get; private set; }
+    
+    public List<string> History { get; private set; }
+
+    public Wallet(string owner)
+    {
+        this.Id = Guid.NewGuid();
+        this.Owner = owner;
+        this.Balance = 0;
+        History = new List<string>();
+    }
+
+    public async Task<bool> DepositAsync(decimal amount)
+    {
+        if (amount <= 0)
+        {
+            return false;
+        }
+        await Task.Delay(2000); 
+        this.Balance += amount;
+        this.History.Add("Deposit:  " + amount.ToString("C"));
+        return true;
+    }
+
+    public bool Withdraw(decimal amount)
+    {
+        if (amount <= 0 || this.Balance < amount) return false;
+        this.Balance -= amount;
+        this.History.Add("Withdraw:  " + amount.ToString("C"));
+        return true;
+    }
+
+    public bool Transfer(Wallet destination, decimal amount)
+    {
+        if (this.Balance < amount || amount <= 0)
+        {
+            return false;
+        }
+        this.Balance -= amount;
+        this.History.Add($"Transfer to {destination.Id}:  " + amount.ToString("C"));
+        destination.Balance += amount;
+        destination.History.Add($"Received of {this.Id}: " + amount.ToString("C"));
+        return true;
+    }
+    
+}
+
+public record PedidoDeposito(Guid Id, decimal Amount);
+public record PedidoTransferencia(Guid IdOrigem, Guid IdDestino, decimal Amount);
