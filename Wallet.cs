@@ -60,7 +60,4 @@ public class Wallet
     }
 
 }
-
-public record PedidoCriacao(string Nome);
-public record PedidoDeposito(Guid Id, decimal Amount);
 public record PedidoTransferencia(Guid IdOrigem, Guid IdDestino, decimal Amount);

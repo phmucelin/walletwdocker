@@ -1,6 +1,7 @@
 using BancoApi;
 using BancoApi.Data;
 using Microsoft.EntityFrameworkCore;
+using BancoApi.DTOs;
 
 namespace BancoApi.Services;
 
@@ -13,7 +14,7 @@ public class WalletServices
         _db = db;
     }
 
-    public async Task<Wallet> CriarConta(PedidoCriacao request)
+    public async Task<Wallet> CriarConta(CriarContaRequest request)
     {
         var novaCarteira = new Wallet(request.Nome);
         _db.Wallets.Add(novaCarteira);
@@ -31,7 +32,7 @@ public class WalletServices
         return await _db.Wallets.FindAsync(id);
     }
 
-    public async Task<Wallet?> Depositar(PedidoDeposito request)
+    public async Task<Wallet?> Depositar(DepositoRequest request)
     {
         var conta = await _db.Wallets.FindAsync(request.Id);
         if (conta == null)
@@ -39,7 +40,7 @@ public class WalletServices
             return null;
         }
 
-        var sucesso = await conta.DepositAsync(request.Amount);
+        var sucesso = await conta.DepositAsync(request.Valor);
         if (!sucesso)
         {
             throw new ArgumentException("Voce nao pode depositar valores menores ou iguais a zero.");
