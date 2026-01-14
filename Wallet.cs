@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+namespace BancoApi;
+
 public class Wallet
 {
     public Guid Id { get; private set; } = Guid.NewGuid();
@@ -10,8 +12,10 @@ public class Wallet
 
     public List<string> History { get; private set; } = new();
 
-    public Wallet() { }
-    
+    public Wallet()
+    {
+    }
+
     public Wallet(string owner)
     {
         this.Id = Guid.NewGuid();
@@ -26,7 +30,8 @@ public class Wallet
         {
             return false;
         }
-        await Task.Delay(2000); 
+
+        await Task.Delay(2000);
         this.Balance += amount;
         this.History.Add("Deposit:  " + amount.ToString("C"));
         return true;
@@ -46,14 +51,16 @@ public class Wallet
         {
             return false;
         }
+
         this.Balance -= amount;
         this.History.Add($"Transfer to {destination.Id}:  " + amount.ToString("C"));
         destination.Balance += amount;
         destination.History.Add($"Received of {this.Id}: " + amount.ToString("C"));
         return true;
     }
-    
+
 }
 
+public record PedidoCriacao(string Nome);
 public record PedidoDeposito(Guid Id, decimal Amount);
 public record PedidoTransferencia(Guid IdOrigem, Guid IdDestino, decimal Amount);

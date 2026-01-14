@@ -8,9 +8,13 @@ public static class WalletEndPoints
 {
     public static void MapWalletEndpoints(this WebApplication app)
     {
-        app.MapPost("/criar-conta", async (AppDbContext db, string nome) =>
+        app.MapPost("/criar-conta", async (AppDbContext db, PedidoCriacao request) =>
         {
-            var novaCarteira = new Wallet(nome);
+            if (string.IsNullOrWhiteSpace(request.Nome))
+            {
+                return Results.BadRequest("O nome do titular é obrigatório!");
+            }
+            var novaCarteira = new Wallet(request.Nome);
             db.Wallets.Add(novaCarteira);
             await db.SaveChangesAsync();
             return Results.Ok(new
@@ -24,6 +28,10 @@ public static class WalletEndPoints
         app.MapGet("/listar-contas", async (AppDbContext db) =>
         {
             var todasContas = await db.Wallets.ToListAsync();
+            if (todasContas.Count == 0)
+            {
+                return Results.NoContent();
+            }
             return Results.Ok(todasContas);
         });
 
@@ -41,7 +49,11 @@ public static class WalletEndPoints
         {
             var carteira = await db.Wallets.FindAsync(request.Id);
             if (carteira == null){return Results.NotFound("Carteira nao encontrada.");}
-            await carteira.DepositAsync(request.Amount);
+            bool sucesso = await carteira.DepositAsync(request.Amount);
+            if (!sucesso)
+            {
+                return Results.BadRequest("Deposito não foi concluido.");
+            }
             await db.SaveChangesAsync();
             return Results.Ok(carteira.Balance);
         });
