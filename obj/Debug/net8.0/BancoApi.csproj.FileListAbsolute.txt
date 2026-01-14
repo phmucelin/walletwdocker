@@ -103,9 +103,11 @@
 /Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/bin/Debug/net8.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/bin/Debug/net8.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/BancoApi.sourcelink.json
-/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/staticwebassets/msbuild.BancoApi.Microsoft.AspNetCore.StaticWebAssets.props
-/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/staticwebassets/msbuild.build.BancoApi.props
-/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.BancoApi.props
-/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.BancoApi.props
-/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/staticwebassets.pack.json
-/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/BancoApi.csproj.CopyComplete
+/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/bin/Debug/net8.0/BancoApi.staticwebassets.endpoints.json
+/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/rpswa.dswa.cache.json
+/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/rjimswa.dswa.cache.json
+/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/rjsmrazor.dswa.cache.json
+/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/rjsmcshtml.dswa.cache.json
+/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/staticwebassets.build.json.cache
+/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/staticwebassets.build.endpoints.json
+/Users/pedromucelin/RiderProjects/WebApplication1/BancoApi/obj/Debug/net8.0/BancoApi.csproj.Up2Date

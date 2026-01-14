@@ -1,5 +1,6 @@
 using BancoApi.Data;
 using Microsoft.EntityFrameworkCore;
+using BancoApi.Services;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BancoApi;
@@ -8,90 +9,79 @@ public static class WalletEndPoints
 {
     public static void MapWalletEndpoints(this WebApplication app)
     {
-        app.MapPost("/criar-conta", async (AppDbContext db, PedidoCriacao request) =>
+        app.MapPost("/criar-conta", async (WalletServices service, PedidoCriacao request) =>
         {
-            if (string.IsNullOrWhiteSpace(request.Nome))
+            try
             {
-                return Results.BadRequest("O nome do titular é obrigatório!");
+                var novaCarteira = await service.CriarConta(request);
+
+                return Results.Ok(new
+                {
+                    Mensagem = "Conta criada com sucesso!",
+                    Id = novaCarteira.Id,
+                    Dono = novaCarteira.Owner
+                });
             }
-            var novaCarteira = new Wallet(request.Nome);
-            db.Wallets.Add(novaCarteira);
-            await db.SaveChangesAsync();
-            return Results.Ok(new
+            catch (Exception ex)
             {
-                Mensagem = "Conta criada com sucesso!",
-                Id = novaCarteira.Id,
-                Dono = novaCarteira.Owner
-            });
+                return Results.BadRequest(ex.Message);
+            }
+            
 
         });
-        app.MapGet("/listar-contas", async (AppDbContext db) =>
+        app.MapGet("/listar-contas", async (WalletServices service) =>
         {
-            var todasContas = await db.Wallets.ToListAsync();
-            if (todasContas.Count == 0)
-            {
-                return Results.NoContent();
-            }
+            var todasContas = await service.ListarContas();
             return Results.Ok(todasContas);
         });
 
-        app.MapGet("/saldo/{id}", async (AppDbContext db, Guid id) =>
+        app.MapGet("/saldo/{id}", async (WalletServices service, Guid id) =>
         {
-            var carteira = await db.Wallets.FindAsync(id);
+            var carteira = await service.ObterSaldo(id);
             if (carteira == null)
             {
                 return Results.NotFound("Carteira nao encontrada.");
             }
-
             return Results.Ok(new { Dono = carteira.Owner, Saldo = carteira.Balance });
         });
-        app.MapPost("/deposit", async (AppDbContext db, PedidoDeposito request) =>
+        app.MapPost("/deposit", async (WalletServices service, PedidoDeposito request) =>
         {
-            var carteira = await db.Wallets.FindAsync(request.Id);
-            if (carteira == null){return Results.NotFound("Carteira nao encontrada.");}
-            bool sucesso = await carteira.DepositAsync(request.Amount);
-            if (!sucesso)
+            try
             {
-                return Results.BadRequest("Deposito não foi concluido.");
+                var carteira = await service.Depositar(request);
+                if (carteira == null)
+                {
+                    return Results.NotFound("Carteira nao encontrada.");
+                }
+
+                return Results.Ok(carteira.Balance);
             }
-            await db.SaveChangesAsync();
-            return Results.Ok(carteira.Balance);
+            catch (Exception ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
+            
         });
-        app.MapGet("/extrato/{id}", async (AppDbContext db, Guid id) =>
+        // Preciso criar essa no services.
+        app.MapGet("/extrato/{id}", async (WalletServices service, Guid id) =>
         {
-            var carteira = await db.Wallets.FindAsync(id);
+            var carteira = await service.ObterSaldo(id);
             if (carteira == null){return Results.NotFound("Carteira nao encontrada.");}
 
             return Results.Ok(new
                 { Dono = carteira.Owner, Historico = carteira.History }
             );
         });
-        app.MapPost("/transfer", async (AppDbContext db, PedidoTransferencia request ) => 
+        app.MapPost("/transfer", async (WalletServices service, PedidoTransferencia request) =>
         {
-            var carteira1 = await db.Wallets.FindAsync(request.IdOrigem);
-            if (carteira1 == null)
+            var resultado = await service.Transferir(request);
+            if (resultado.Sucesso)
             {
-                return Results.NotFound("Carteira de origem nao encontrada.");
-            }
-            var carteira2 = await db.Wallets.FindAsync(request.IdDestino);
-            if (carteira2 == null)
-            {
-                return Results.NotFound("Carteira de destino nao encontrada.");
-            }
-            bool result = carteira1.Transfer(carteira2, request.Amount);
-            if (result)
-            {
-                await db.SaveChangesAsync();
-                return Results.Ok(new
-                {
-                    Mensagem = "Transfer com sucesso!",
-                    SaldoOrigem = carteira1.Balance,
-                    SaldoDestino = carteira2.Balance
-                });
+                return Results.Ok(resultado);
             }
             else
             {
-                return Results.BadRequest("Saldo insuficiente.");
+                return Results.BadRequest(resultado.Mensagem);
             }
         });
     }

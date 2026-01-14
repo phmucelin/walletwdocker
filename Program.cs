@@ -12,6 +12,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+builder.Services.AddScoped<BancoApi.Services.WalletServices>();
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen();           
 var app = builder.Build();

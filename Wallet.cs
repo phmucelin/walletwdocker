@@ -47,7 +47,7 @@ public class Wallet
 
     public bool Transfer(Wallet destination, decimal amount)
     {
-        if (this.Balance < amount || amount <= 0)
+        if (this.Balance < amount || amount <= 0 || this.Id == destination.Id)
         {
             return false;
         }
