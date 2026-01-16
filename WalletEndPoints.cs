@@ -12,18 +12,10 @@ public static class WalletEndPoints
     {
         app.MapPost("/criar-conta", async (WalletServices service, CriarContaRequest request) =>
         {
-            try
-            {
-                var novaCarteira = await service.CriarConta(request);
-                var response = new ContaResponse(novaCarteira.Id, novaCarteira.Owner, novaCarteira.Balance);
-                return Results.Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return Results.BadRequest(ex.Message);
-            }
+            var novaCarteira = await service.CriarConta(request);
+            var response = new ContaResponse(novaCarteira.Id, novaCarteira.Owner, novaCarteira.Balance);
+            return Results.Ok(response);
             
-
         });
         app.MapGet("/listar-contas", async (WalletServices service) =>
         {
@@ -43,20 +35,14 @@ public static class WalletEndPoints
         });
         app.MapPost("/deposit", async (WalletServices service, DepositoRequest request) =>
         {
-            try
-            {
                 var carteira = await service.Depositar(request);
                 if (carteira == null)
                 {
                     return Results.NotFound("Carteira nao encontrada.");
                 }
-
                 return Results.Ok(new ContaResponse(carteira.Id, carteira.Owner, carteira.Balance));
-            }
-            catch (Exception ex)
-            {
-                return Results.BadRequest(ex.Message);
-            }
+            
+
             
         });
         app.MapGet("/extrato/{id}", async (WalletServices service, Guid id) =>
