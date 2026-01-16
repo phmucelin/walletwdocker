@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using BancoApi;
 using BancoApi.Data;
 using Microsoft.EntityFrameworkCore;
-using BancoApi.Services; // Importante para achar o WalletServices
+using BancoApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,10 +19,11 @@ builder.Services.AddProblemDetails();
 
 // 3. Registro do Service 
 builder.Services.AddScoped<WalletServices>();
-
+builder.Services.AddScoped<AuthService>();
 // 4. Swagger
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen();           
+
 
 var app = builder.Build();
 
@@ -40,5 +41,6 @@ app.UseHttpsRedirection();
 
 // Seus Endpoints
 app.MapWalletEndpoints();
+app.MapAuthEndpoints();
 
 app.Run();
