@@ -16,13 +16,15 @@ public static class WalletEndPoints
             var response = new ContaResponse(novaCarteira.Id, novaCarteira.Owner, novaCarteira.Balance);
             return Results.Ok(response);
             
-        });
+        })
+        .RequireAuthorization();;
         app.MapGet("/listar-contas", async (WalletServices service) =>
         {
             var todasContas = await service.ListarContas();
             var response = todasContas.Select(x => new ContaResponse(x.Id, x.Owner, x.Balance));
             return Results.Ok(response);
-        });
+        })
+        .RequireAuthorization();;
 
         app.MapGet("/saldo/{id}", async (WalletServices service, Guid id) =>
         {
@@ -32,7 +34,8 @@ public static class WalletEndPoints
                 return Results.NotFound("Carteira nao encontrada.");
             }
             return Results.Ok(new ContaResponse(carteira.Id, carteira.Owner, carteira.Balance));
-        });
+        })
+        .RequireAuthorization();;
         app.MapPost("/deposit", async (WalletServices service, DepositoRequest request) =>
         {
                 var carteira = await service.Depositar(request);
@@ -44,14 +47,16 @@ public static class WalletEndPoints
             
 
             
-        });
+        })
+        .RequireAuthorization();;
         app.MapGet("/extrato/{id}", async (WalletServices service, Guid id) =>
         {
             var carteira = await service.ObterSaldo(id);
             if (carteira == null){return Results.NotFound("Carteira nao encontrada.");}
 
             return Results.Ok(new ExtratoResponse(carteira.Owner, carteira.Balance, carteira.History));
-        });
+        })
+        .RequireAuthorization();;
         app.MapPost("/transfer", async (WalletServices service, PedidoTransferencia request) =>
         {
             var resultado = await service.Transferir(request);
@@ -63,6 +68,7 @@ public static class WalletEndPoints
             {
                 return Results.BadRequest(resultado.Mensagem);
             }
-        });
+        })
+        .RequireAuthorization();;
     }
 }
