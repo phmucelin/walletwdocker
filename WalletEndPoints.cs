@@ -17,7 +17,7 @@ public static class WalletEndPoints
             return Results.Ok(response);
             
         })
-        .RequireAuthorization();;
+        .AllowAnonymous();
         app.MapGet("/listar-contas", async (WalletServices service) =>
         {
             var todasContas = await service.ListarContas();

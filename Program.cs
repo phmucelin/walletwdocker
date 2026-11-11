@@ -79,17 +79,26 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// 5. Pipeline
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    
+    System.Threading.Thread.Sleep(5000);
+    
+    db.Database.Migrate();
+}
+
+// 5. Pipeline
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();   
     app.UseSwaggerUI(); 
-}
+//}
 
 // Ativa o Middleware de Erro
 app.UseExceptionHandler(); 
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 // Seus Endpoints
